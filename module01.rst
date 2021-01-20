@@ -27,7 +27,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 Our JavaScript code is in two files so we need two `js_import` lines to load them into our NGINX configuration.  Notice in the `js_content` directives how we use a namespace to identify in which file a JavaScript function is located.
 
 .. code-block:: nginx
-  :caption: nginx.conf
 
   load_module modules/ngx_http_js_module.so;
 
@@ -53,7 +52,6 @@ Our JavaScript code is in two files so we need two `js_import` lines to load the
 The Javascript code to generate "Hello World!":
 
 .. code-block:: js
-  :caption: example.js
 
   function hello(r) {
     r.return(200, "Hello world!\n");
@@ -64,7 +62,6 @@ The Javascript code to generate "Hello World!":
 The utils.js file will be part of all of our labs.  It has one function that displays the version of the njs module in use on this NGINX server.
 
 .. code-block:: js
-  :caption: utils.js
 
   function version(r) {
       r.return(200, njs.version);
