@@ -3,12 +3,12 @@ Authorizing requests based on request body content [http/authorization/request_b
 
 Sometimes authentication credentials are passed in the request body rather than through headers or the query string.  Using njs, we have full access to the request body contents.
 
-**Step 1:** Use the following commands to start your NGINX container with this lab's files:
+**Step 1:** Use the following commands to start your NGINX container with this lab's files:  *Notice the SECRET_KEY environment variable*
 
 .. code-block:: shell
 
   EXAMPLE='http/authorization/request_body'
-  docker run --rm --name njs_example -e SECRET_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example -e SECRET_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -39,7 +39,9 @@ This config uses `auth_request` to make a request to an "authentication server" 
     env SECRET_KEY;
 
     http {
-          js_import main from example.js;
+          js_path "/etc/nginx/njs/";
+
+          js_import main from http/authorization/request_body.js;
 
           upstream backend {
               server 127.0.0.1:8081;

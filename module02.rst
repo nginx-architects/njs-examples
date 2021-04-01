@@ -8,7 +8,7 @@ When interacting with web servers, some characters have special meaning and can'
 .. code-block:: shell
 
   EXAMPLE='http/decode_uri'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -37,10 +37,12 @@ The NGINX configuraton provides two locations, /foo and /dec_foo.  Using /foo ju
     ...
 
     http {
-          js_import utils.js;
-          js_import main from example.js;
+      js_path "/etc/nginx/njs/";
 
-          js_set $dec_foo main.dec_foo;
+      js_import utils.js;
+      js_import main from http/decode_uri.js;
+
+      js_set $dec_foo main.dec_foo;
 
       server {
    ...

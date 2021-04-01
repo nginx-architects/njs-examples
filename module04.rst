@@ -7,7 +7,7 @@ When our njs code generates dynamic content we can send our own HTTP requests to
 .. code-block:: shell
 
   EXAMPLE='http/join_subrequests'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8080:8080 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -27,8 +27,10 @@ Notice how this config uses location blocks to define the target of each subrequ
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/join_subrequests.js;
 
     server {
           listen 80;

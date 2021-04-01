@@ -7,7 +7,7 @@ NGINX provides the ngx_http_secure_link_module to protect a web location from si
 .. code-block:: shell
 
   EXAMPLE='http/authorization/secure_link_hash'
-  docker run --rm --name njs_example -e SECRET_KEY=" mykey" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example -e SECRET_KEY=" mykey" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -38,7 +38,9 @@ This configuration rejects the first attempt to access the ``/secure/`` location
   ...
 
   http {
-    js_import main from example.js;
+    js_path "/etc/nginx/njs/";
+
+    js_import main from http/authorization/secure_link_hash.js;
 
     js_set $new_foo main.create_secure_link;
     js_set $secret_key key main.secret_key;

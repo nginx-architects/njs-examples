@@ -10,7 +10,7 @@ Using njs along with auth_request can allow additional logic to be used for auth
 .. code-block:: shell
 
   EXAMPLE='http/authorization/auth_request'
-  docker run --rm --name njs_example -e SECRET_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example -e SECRET_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -60,7 +60,9 @@ This config uses `auth_request` to make a request to an "authentication server" 
     env SECRET_KEY;
 
     http {
-          js_import main from example.js;
+          js_path "/etc/nginx/njs/";
+
+          js_import main from http/authorization/auth_request.js;
 
           upstream backend {
               server 127.0.0.1:8081;

@@ -7,7 +7,7 @@ Chaining subrequests allows us to use the output of one subrequest as the input 
 .. code-block:: shell
 
   EXAMPLE='http/subrequests_chaining'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8080:8080 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -33,8 +33,10 @@ Notice how this config uses location blocks to define the target of each subrequ
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/subrequests_chaining.js;
 
     server {
           listen 80;

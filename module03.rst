@@ -8,7 +8,7 @@ JSON Web Tokens (JWT) are a common way to authenticate to web applications.  In 
 .. code-block:: shell
 
   EXAMPLE='http/authorization/jwt'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -26,8 +26,10 @@ This NGINX configuration uses `js_set` to invoke our JavaScript to extract the J
 .. code-block:: nginx
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/authorization/jwt.js;
 
     js_set $jwt_payload_sub main.jwt_payload_sub;
 

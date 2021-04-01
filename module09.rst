@@ -1,12 +1,12 @@
 Generating JWT token [http/authorization/gen_hs_jwt]
 ======================================
 
-**Step 1:** Use the following commands to start your NGINX container with this lab's files:
+**Step 1:** Use the following commands to start your NGINX container with this lab's files: *Notice the JWT_GEN_KEY environment variable*
 
 .. code-block:: shell
 
   EXAMPLE='http/authorization/gen_hs_jwt'
-  docker run --rm --name njs_example -e JWT_GEN_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example -e JWT_GEN_KEY="foo" -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -19,7 +19,7 @@ Generating JWT token [http/authorization/gen_hs_jwt]
 
 **Code Snippets**
 
-This config uses `js_set` to invoke the jwt function in our njs code.  The result is returned is the response body.
+This config uses `js_set` to invoke the jwt function in our njs code.  The generated JWT is returned in the response body.
 
 .. code-block:: nginx
 
@@ -28,8 +28,10 @@ This config uses `js_set` to invoke the jwt function in our njs code.  The resul
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/authorization/gen_hs_jwt.js;
 
     js_set $jwt main.jwt;
 

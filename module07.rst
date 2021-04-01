@@ -8,7 +8,7 @@ In this example, we will use njs to use a online mapping table to transform a re
 .. code-block:: shell
 
   EXAMPLE='http/complex_redirects'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -56,8 +56,10 @@ This config uses `auth_request` to make a request to an "authentication server" 
       ...
 
    http {
+      js_path "/etc/nginx/njs/";
+
       js_import utils.js;
-      js_import main from example.js;
+      js_import main from http/complex_redirects.js;
 
       upstream backend {
         server 127.0.0.1:8080;
@@ -82,7 +84,7 @@ This config uses `auth_request` to make a request to an "authentication server" 
          location = /resolv {
              internal;
 
-             js_content resolv;
+             js_content main.resolv;
          }
       }
    }

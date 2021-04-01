@@ -88,7 +88,7 @@ Using Docker to start each lab requires many command line options.  We will make
 .. code-block:: shell
 
   EXAMPLE='http/hello'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 *Notice how we use Docker "volume mounts" to replace the container's default configuration with our own.*
 
@@ -96,7 +96,7 @@ If you are using a Windows Command Prompt, use percent signs for your environmen
 
 .. code-block:: shell
 
-  docker run --rm --name njs_example  -v %cd%/conf/%EXAMPLE%.conf:/etc/nginx/nginx.conf:ro  -v %cd%/njs/%EXAMPLE%.js:/etc/nginx/example.js:ro -v %cd%/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v %cd%/conf/%EXAMPLE%.conf:/etc/nginx/nginx.conf:ro  -v %cd%/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 When you're done with a lab, remove the running NGINX container before moving to the next one:
 

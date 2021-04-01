@@ -8,7 +8,7 @@ In this example we will use the stream module to inspect an incoming TCP connect
 .. code-block:: shell
 
   EXAMPLE='stream/detect_http'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -17,8 +17,13 @@ In this example we will use the stream module to inspect an incoming TCP connect
   curl http://localhost/
   HTTPBACK
 
-  echo 'ABC' | nc 127.0.0.1 80 -q1
+  telnet 127.0.0.1 80
+  Trying 127.0.0.1...
+  Connected to 127.0.0.1.
+  Escape character is '^]'.
+  TEST
   TCPBACK
+  Connection closed by foreign host.
 
   docker stop njs_example
 
@@ -33,8 +38,10 @@ This config uses `js_preread` to fetch incoming data into a buffer for inspectio
   ...
 
   stream {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from stream/detect_http.js;
 
     js_set $upstream main.upstream_type;
 

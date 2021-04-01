@@ -8,7 +8,7 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 .. code-block:: shell
 
   EXAMPLE='http/hello'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
 **Step 2:** Now let's use curl to test our NGINX server:
 
@@ -18,7 +18,7 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
   Hello world!
 
   curl http://localhost/version
-  0.5.0
+  0.5.3
 
   docker stop njs_example
 
@@ -32,8 +32,10 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
   events {}
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/hello.js;
 
     server {
       listen 80;
