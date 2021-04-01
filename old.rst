@@ -2,40 +2,54 @@
 NGINX JavaScript examples
 =========================
 
-****************
-Table of content
-****************
-
-- Intro_
-- HTTP_
-
-  - Authorization_
-  - Proxying_
-- Stream_
-
-  - Routing_
-- Misc_
-- `Command line interface`_
+.. contents::
+   :depth: 3
 
 Intro
 =====
 
-Note: the examples below work with njs >= `0.4.0 <http://nginx.org/en/docs/njs/changes.html#njs0.4.0>`_, see `this version <https://github.com/xeioex/njs-examples/tree/b1c992c742b5d41dea2e087ebea98e098543a341>`_ for older releases.
+This repo contains complete examples for various use cases where `njs <http://nginx.org/en/docs/njs/>`_ is useful. The document as well as `njs documentation <http://nginx.org/en/docs/njs/>`_ expects some familiarity with and understanding of nginx. Beginners should refer to the official `admin guide <https://docs.nginx.com/nginx/admin-guide/>`_.
 
-Running inside Docker:
+Note: the examples below work with njs >= `0.5.2 <http://nginx.org/en/docs/njs/changes.html#njs0.5.2>`_. To see the current version run the following command: ``docker run -i -t nginx:latest /usr/bin/njs -V``.
+
+Running inside Docker
+---------------------
 
 .. code-block:: shell
 
   git clone https://github.com/xeioex/njs-examples
   cd njs-examples
   EXAMPLE='http/hello'
-  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro  -v $(pwd)/njs/$EXAMPLE.js:/etc/nginx/example.js:ro -v $(pwd)/njs/utils.js:/etc/nginx/utils.js:ro -p 80:80 -p 8090:8090 -d nginx
+  docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
 
   # Stopping.
   docker stop njs_example
 
-Hello world [http/hello]
------------------------
+Status
+------
+While njs is in active development it is production ready. Its reliability has been proven by extensive test coverage as well as a good track record with our customers.
+
+nginx compatibility
+-------------------
+As njs is a `native nginx module <http://nginx.org/en/docs/dev/development_guide.html#Modules>`_ its compatibility with nginx is high. While it is developed as a separate project, it is routinely tested with latest nginx versions on various platforms and architectures.
+
+Presentation at nginx.conf 2018
+-------------------------------
+https://youtu.be/Jc_L6UffFOs
+
+Installation
+------------
+njs is available as a part of official nginx docker image as well as an officially supported `packet <http://nginx.org/en/linux_packages.html>`_ for major linux distributions.
+
+Repository
+----------
+Please ask questions, report issues, and send patches via official `Github mirror <https://github.com/nginx/njs>`_.
+
+HTTP
+====
+
+Hello world example [http/hello]
+--------------------------------
 
 nginx.conf:
 
@@ -46,8 +60,10 @@ nginx.conf:
   events {}
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/hello.js;
 
     server {
       listen 80;
@@ -82,22 +98,21 @@ Checking:
   curl http://localhost/version
   0.4.1
 
-HTTP
-====
-
 Authorization
-=============
+-------------
 
 Getting arbitrary field from JWT as a nginx variable [http/authorization/jwt]
-----------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 nginx.conf:
 
 .. code-block:: nginx
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/authorization/jwt.js;
 
     js_set $jwt_payload_sub main.jwt_payload_sub;
 
@@ -134,7 +149,7 @@ Checking:
   alice
 
 Generating JWT token [http/authorization/gen_hs_jwt]
----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 nginx.conf:
 
@@ -145,8 +160,10 @@ nginx.conf:
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/authorization/gen_hs_jwt.js;
 
     js_set $jwt main.jwt;
 
@@ -199,8 +216,8 @@ Checking:
   eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTU4NDcyMjk2MH0.eyJpc3MiOiJuZ2lueCIsInN1YiI6ImFsaWNlIiwiZm9vIjoxMjMsImJhciI6InFxIiwienl4IjpmYWxzZX0.GxfKkJSWI4oq5sGBg4aKRAcFeKmiA6v4TR43HbcP2X8
 
 
-Secure hash [http/authorization/secure_link_hash]
--------------------------------------------------
+Secure link [http/authorization/secure_link_hash]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Protecting ``/secure/`` location from simple bots and web crawlers.
 
 nginx.conf:
@@ -212,7 +229,9 @@ nginx.conf:
   ...
 
   http {
-    js_import main from example.js;
+    js_path "/etc/nginx/njs/";
+
+    js_import main from http/authorization/secure_link_hash.js;
 
     js_set $new_foo main.create_secure_link;
     js_set $secret_key key main.secret_key;
@@ -262,7 +281,7 @@ Checking:
 
 .. code-block:: shell
 
-  docker run --rm --name njs_example -e JWT_GEN_KEY=" mykey" ...
+  docker run --rm --name njs_example -e SECRET_KEY=" mykey" ...
 
   curl http://127.0.0.1/secure/r
   302
@@ -277,7 +296,10 @@ Checking:
   PASSED
 
 Authorizing requests using auth_request [http/authorization/auth_request]
--------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _`auth request`:
+
 `auth_request <http://nginx.org/en/docs/http/ngx_http_auth_request_module.html>`_
 is generic nginx modules which implements client authorization based on the result of a subrequest.
 Combination of auth_request and njs allows to implement arbitrary authorization logic.
@@ -291,31 +313,33 @@ nginx.conf:
     env SECRET_KEY;
 
     http {
-          js_import main from example.js;
+      js_path "/etc/nginx/njs/";
 
-          upstream backend {
-              server 127.0.0.1:8081;
+      js_import main from http/authorization/auth_request.js;
+
+      upstream backend {
+          server 127.0.0.1:8081;
+      }
+
+      server {
+          listen 80;
+
+          location /secure/ {
+              auth_request /validate;
+
+              proxy_pass http://backend;
           }
 
-          server {
-              listen 80;
-
-              location /secure/ {
-                  auth_request /validate;
-
-                  proxy_pass http://backend;
-              }
-
-              location /validate {
-                  internal;
-                  js_content main.authorize;
-              }
+          location /validate {
+              internal;
+              js_content main.authorize;
           }
+      }
 
-          server {
-              listen 127.0.0.1:8081;
-              return 200 "BACKEND:$uri\n";
-          }
+      server {
+          listen 127.0.0.1:8081;
+          return 200 "BACKEND:$uri\n";
+      }
     }
 
 example.js:
@@ -362,7 +386,7 @@ Checking:
 
   docker run --rm --name njs_example -e SECRET_KEY="foo" ...
 
-  curl http://localhost/secure/B  
+  curl http://localhost/secure/B
   <html>
   <head><title>401 Authorization Required</title></head>
   <body>
@@ -394,7 +418,7 @@ Checking:
   172.17.0.1 - - [03/Aug/2020:18:23:00 +0000] "GET /secure/B HTTP/1.1" 200 18 "-" "curl/7.58.0"
 
 Authorizing requests based on request body content [http/authorization/request_body]
------------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 `Authorizing requests using auth_request [http/authorization/auth_request]`_ cannot inspect client request body.
 Sometimes inspecting client request body is required, for example to validate POST arguments (application/x-www-form-urlencoded).
 
@@ -407,28 +431,31 @@ nginx.conf:
     env SECRET_KEY;
 
     http {
-          js_import main from example.js;
+      js_path "/etc/nginx/njs/";
 
-          upstream backend {
-              server 127.0.0.1:8081;
+      js_import main from http/authorization/request_body.js;
+
+      upstream backend {
+          server 127.0.0.1:8081;
+      }
+
+      server {
+          listen 80;
+
+          location /secure/ {
+              js_content main.authorize;
           }
 
-          server {
-              listen 80;
-
-              location /secure/ {
-                  js_content main.authorize;
-              }
-
-              location @app-backend {
-                  proxy_pass http://backend;
-              }
+          location @app-backend {
+              proxy_pass http://backend;
           }
+      }
 
-          server {
-              listen 127.0.0.1:8081;
-              return 200 "BACKEND:$uri\n";
-          }
+      server {
+          listen 127.0.0.1:8081;
+          return 200 "BACKEND:$uri\n";
+      }
+    }
 
 example.js:
 
@@ -486,7 +513,7 @@ Checking:
 
   docker run --rm --name njs_example -e SECRET_KEY="foo" ...
 
-  curl http://localhost/secure/B 
+  curl http://localhost/secure/B
   No signature
 
   curl http://localhost/secure/B?a=1 -H Signature:A
@@ -498,11 +525,82 @@ Checking:
   curl http://localhost/secure/B -d "a=1" -X POST -H Signature:YC5iL6aKDnv7XOjknEeDL+P58iw=
   BACKEND:/secure/B
 
+Certificates
+------------
+
+Reading subject alternative from client certificate [http/certs/subject_alternative]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Accessing arbitrary fields in client certificates.
+
+nginx.conf:
+
+Certificates are created using the following `guide <https://jamielinux.com/docs/openssl-certificate-authority/introduction.html>`_.
+
+.. code-block:: nginx
+
+  ...
+
+  http {
+    js_path "/etc/nginx/njs/";
+
+    js_import main from http/certs/js/subject_alternative.js;
+
+    js_set $san main.san;
+
+    server {
+          listen 443 ssl;
+
+          server_name www.example.com;
+
+          ssl_password_file /etc/nginx/njs/http/certs/ca/password;
+          ssl_certificate /etc/nginx/njs/http/certs/ca/intermediate/certs/www.example.com.cert.pem;
+          ssl_certificate_key /etc/nginx/njs/http/certs/ca/intermediate/private/www.example.com.key.pem;
+
+          ssl_client_certificate /etc/nginx/njs/http/certs/ca/intermediate/certs/ca-chain.cert.pem;
+          ssl_verify_client on;
+
+          location / {
+              return 200 $san;
+          }
+    }
+  }
+
+example.js:
+
+.. code-block:: js
+
+    import x509 from 'x509.js';
+
+    function san(r) {
+        var pem_cert = r.variables.ssl_client_raw_cert;
+        if (!pem_cert) {
+            return '{"error": "no client certificate"}';
+        }
+
+        var cert = x509.parse_pem_cert(pem_cert);
+
+        // subjectAltName oid 2.5.29.17
+        return JSON.stringify(x509.get_oid_value(cert, "2.5.29.17")[0]);
+    }
+
+    export default {san};
+
+Checking:
+
+.. code-block:: shell
+
+  openssl x509 -noout -text -in njs/http/certs/ca/intermediate/certs/client.cert.pem | grep 'X509v3 Subject Alternative Name' -A1
+  X509v3 Subject Alternative Name:
+  IP Address:127.0.0.1, IP Address:0:0:0:0:0:0:0:1, DNS:example.com, DNS:www2.example.com
+
+  curl https://localhost/ --insecure --key njs/http/certs/ca/intermediate/private/client.key.pem --cert njs/http/certs/ca/intermediate/certs/client.cert.pem  --pass secretpassword
+  ["7f000001","00000000000000000000000000000001","example.com","www2.example.com"]
+
 Proxying
-========
+--------
 
 Subrequests join [http/join_subrequests]
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Combining the results of several subrequests asynchronously into a single JSON reply.
 
 nginx.conf:
@@ -512,8 +610,10 @@ nginx.conf:
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/join_subrequests.js;
 
     server {
           listen 80;
@@ -569,7 +669,7 @@ Checking:
 
 
 Subrequests chaining [http/subrequests_chaining]
--------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Subrequests chaining using JS promises.
 
 nginx.conf:
@@ -579,8 +679,10 @@ nginx.conf:
   ...
 
   http {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from http/subrequests_chaining.js;
 
     server {
           listen 80;
@@ -654,15 +756,227 @@ Checking:
   at native (native)
   at main (native)
 
+Modifying response
+------------------
+
+Modifying or deleting cookies sent by the upstream server [http/response/modify_set_cookie]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+nginx.conf:
+
+.. code-block:: nginx
+
+  ...
+
+  http {
+    js_path "/etc/nginx/njs/";
+
+    js_import main from http/response/modify_set_cookie.js;
+
+    server {
+          listen 80;
+
+          location /modify_cookies {
+              js_header_filter main.cookies_filter;
+              proxy_pass http://localhost:8080;
+          }
+    }
+
+    server {
+          listen 8080;
+
+          location /modify_cookies {
+              add_header Set-Cookie "XXXXXX";
+              add_header Set-Cookie "BB";
+              add_header Set-Cookie "YYYYYYY";
+              return 200;
+          }
+    }
+  }
+
+example.js:
+
+.. code-block:: js
+
+    function cookies_filter(r) {
+        var cookies = r.headersOut['Set-Cookie'];
+        r.headersOut['Set-Cookie'] = cookies.filter(v=>v.length > Number(r.args.len));
+    }
+
+    export default {cookies_filter};
+
+Checking:
+
+.. code-block:: shell
+
+  curl http://localhost/modify_cookies?len=1 -v
+    ...
+  < Set-Cookie: XXXXXX
+  < Set-Cookie: BB
+  < Set-Cookie: YYYYYYY
+
+  curl http://localhost/modify_cookies?len=3 -v
+    ...
+  < Set-Cookie: XXXXXX
+  < Set-Cookie: YYYYYYY
+
+Converting response body characters to lower case [http/response/to_lower_case]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+nginx.conf:
+
+.. code-block:: nginx
+
+  ...
+
+  http {
+    js_path "/etc/nginx/njs/";
+
+    js_import main from http/response/to_lower_case.js;
+
+    server {
+          listen 80;
+
+          location / {
+              js_body_filter main.to_lower_case;
+              proxy_pass http://localhost:8080;
+          }
+    }
+
+    server {
+          listen 8080;
+
+          location / {
+              return 200 'Hello World';
+          }
+    }
+  }
+
+example.js:
+
+.. code-block:: js
+
+    function to_lower_case(r, data, flags) {
+        r.sendBuffer(data.toLowerCase(), flags);
+    }
+
+    export default {to_lower_case};
+
+Checking:
+
+.. code-block:: shell
+
+  curl http://localhost/
+  hello world
 
 Stream
 ======
 
+Authorization
+-------------
+
+Authorizing connections using ngx.fetch() as auth_request [stream/auth_request]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The example illustrates the usage of ngx.fetch() as an `auth request`_ analog in
+stream with a very simple TCP-based protocol: a connection starts with a
+magic prefix "MAGiK" followed by a secret 2 bytes. The preread_verify handler
+reads the first part of a connection and sends the secret bytes for verification
+to a HTTP endpoint. Later it decides based upon the endpoint reply whether
+forward the connection to an upstream or reject the connection.
+
+nginx.conf:
+
+.. code-block:: nginx
+
+  stream {
+        js_path "/etc/nginx/njs/";
+
+        js_import main from stream/auth_request.js;
+
+        server {
+              listen 80;
+
+              js_preread  main.preread_verify;
+
+              proxy_pass 127.0.0.1:8081;
+        }
+
+        server {
+              listen 8081;
+
+              return BACKEND\n;
+        }
+  }
+
+  http {
+        js_path "/etc/nginx/njs/";
+
+        js_import main from stream/auth_request.js;
+
+        server {
+              listen 8080;
+
+              server_name  aaa;
+
+              location /validate {
+                  js_content main.validate;
+              }
+        }
+  }
+
+example.js:
+
+.. code-block:: js
+
+  function preread_verify(s) {
+      var collect = '';
+
+      s.on('upload', function (data, flags) {
+          collect += data;
+
+          if (collect.length >= 5 && collect.startsWith('MAGiK')) {
+              s.off('upload');
+              ngx.fetch('http://127.0.0.1:8080/validate',
+                        {body: collect.slice(5,7), headers: {Host:'aaa'}})
+              .then(reply => (reply.status == 200) ? s.done(): s.deny())
+
+          } else if (collect.length) {
+              s.deny();
+          }
+      });
+  }
+
+  function validate(r) {
+          r.return((r.requestText == 'QZ') ? 200 : 403);
+  }
+
+  export default {validate, preread_verify};
+
+Checking:
+
+.. code-block:: shell
+
+  telnet 127.0.0.1 80
+  ...
+  Hi
+  Connection closed by foreign host.
+
+  telnet 127.0.0.1 80
+  ...
+  MAGiKQZ
+  BACKEND
+  Connection closed by foreign host.
+
+  telnet 127.0.0.1 80
+  ...
+  MAGiKQQ
+  Connection closed by foreign host.
+
 Routing
-=======
+-------
 
 Choosing upstream in stream based on the underlying protocol [stream/detect_http]
----------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 nginx.conf:
 
@@ -671,8 +985,10 @@ nginx.conf:
   ...
 
   stream {
+    js_path "/etc/nginx/njs/";
+
     js_import utils.js;
-    js_import main from example.js;
+    js_import main from stream/detect_http.js;
 
     js_set $upstream main.upstream_type;
 
@@ -726,8 +1042,13 @@ Checking:
   curl http://localhost/
   HTTPBACK
 
-  echo 'ABC' | nc 127.0.0.1 80 -q1
+  telnet 127.0.0.1 80
+  Trying 127.0.0.1...
+  Connected to 127.0.0.1.
+  Escape character is '^]'.
+  TEST
   TCPBACK
+  Connection closed by foreign host.
 
 Misc
 ====
@@ -740,8 +1061,10 @@ nginx.conf:
 .. code-block:: nginx
 
     http {
+      js_path "/etc/nginx/njs/";
+
       js_import utils.js;
-      js_import main from example.js;
+      js_import main from misc/file_io.js;
 
       server {
             listen 80;
@@ -858,3 +1181,8 @@ Command line interface
       }
      }
     }
+
+Additional learning materials
+=============================
+
+`soulteary/njs-learning-materials <https://github.com/soulteary/njs-learning-materials>`_
