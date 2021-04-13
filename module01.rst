@@ -6,6 +6,7 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 **Step 1:** Copy and paste the following commands to start your NGINX container with this lab's files:
 
 .. code-block:: shell
+.. github display on
   :emphasize-lines: 1,2
 
   EXAMPLE='http/hello'
