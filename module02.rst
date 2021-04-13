@@ -29,7 +29,6 @@ When interacting with web servers, some characters have special meaning and can'
   docker stop njs_example
 
 _  
-
 Code Snippets
 ~~~~~~~~~~~~~
 
@@ -61,7 +60,6 @@ The NGINX configuraton provides two locations, /foo and /dec_foo.  Using /foo ju
    }
 
 _  
-
 In our JavaScript we access the foo argument from the query string through the request's arguements object (args).  We then use the `decodeURIComponent()` built-in method to decode the string.
 
 .. code-block:: js
