@@ -26,3 +26,11 @@
 
 [Subrequests chaining [http/subrequests_chaining]](module13.rst)
 
+[Authorizing connections using ngx.fetch() as auth_request [stream/auth_request]](module14.rst)
+
+[Modifying or deleting cookies sent by the upstream server [http/response/modify_set_cookie]](module15.rst)
+
+[Converting response body characters to lower case [http/response/to_lower_case]](module16.rst)
+
+[Reading subject alternative from client certificate [http/certs/subject_alternative]](module17.rst)
+
