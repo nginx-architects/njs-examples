@@ -23,6 +23,7 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
   docker stop njs_example
 
+|  
 **Code Snippets**
 
 Our JavaScript code is in two files so we need two `js_import` lines to load them into our NGINX configuration.  Notice in the `js_content` directives how we use a namespace to identify in which file a JavaScript function is located.
@@ -63,6 +64,7 @@ The Javascript code to generate "Hello World!":
 
   export default {hello}
 
+|  
 The utils.js file will be part of all of our labs.  It has one function that displays the version of the njs module in use on this NGINX server.
 
 .. code-block:: js
