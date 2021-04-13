@@ -30,6 +30,9 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
 
 .. code-block:: nginx
+  :caption: nginx.conf
+  :linenos:
+.. github display on
 
   load_module modules/ngx_http_js_module.so;
 
