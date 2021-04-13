@@ -25,6 +25,8 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
 **Code Snippets**
 
+Our JavaScript code is in two files so we need two `js_import` lines to load them into our NGINX configuration.  Notice in the `js_content` directives how we use a namespace to identify in which file a JavaScript function is located.
+
 .. code-block:: nginx
 
   load_module modules/ngx_http_js_module.so;
