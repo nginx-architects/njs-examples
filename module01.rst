@@ -7,7 +7,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
 
 .. code-block:: shell
-<!---   :emphasize-lines: 1,2 --->
 
   EXAMPLE='http/hello'
   docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
@@ -15,7 +14,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 **Step 2:** Now let's use curl to test our NGINX server:
 
 .. code-block:: none
-  :emphasize-lines: 1,4,7
 
   curl http://localhost/
   Hello world!
@@ -28,8 +26,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 **Code Snippets**
 
 .. code-block:: nginx
-  :caption: nginx.conf
-  :linenos:
 
   load_module modules/ngx_http_js_module.so;
 
