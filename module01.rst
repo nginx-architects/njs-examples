@@ -1,3 +1,5 @@
+.. github display on
+
 Hello World [http/hello]
 ===================
 
@@ -16,7 +18,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
 .. code-block:: none
   :emphasize-lines: 1,4,7
-.. github display on
 
   curl http://localhost/
   Hello world!
@@ -28,11 +29,9 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
 **Code Snippets**
 
-
+.. code-block:: nginx
   :caption: nginx.conf
   :linenos:
-.. github display on
-.. code-block:: nginx
 
   load_module modules/ngx_http_js_module.so;
 
