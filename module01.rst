@@ -6,6 +6,7 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 **Step 1:** Copy and paste the following commands to start your NGINX container with this lab's files:
 
 .. code-block:: shell
+  :emphasize-lines: 1,2
 
   EXAMPLE='http/hello'
   docker run --rm --name njs_example  -v $(pwd)/conf/$EXAMPLE.conf:/etc/nginx/nginx.conf:ro -v $(pwd)/njs/:/etc/nginx/njs/:ro -p 80:80 -p 443:443 -d nginx
