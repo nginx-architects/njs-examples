@@ -1,5 +1,5 @@
 Decode URI [http/decode_uri]
-===============================
+============================
 
 When interacting with web servers, some characters have special meaning and can't be passed directly in a URL.  To overcome this limitation, strings can be "URL encoded" to allow special characters to be preserved.  In this example, we will use the decodeURIComponent() njs method to decode a URL encoded string provided in the query string parameter foo.
 
@@ -28,7 +28,10 @@ When interacting with web servers, some characters have special meaning and can'
 
   docker stop njs_example
 
-**Code Snippets**
+_  
+
+Code Snippets
+~~~~~~~~~~~~~
 
 The NGINX configuraton provides two locations, /foo and /dec_foo.  Using /foo just returns the string as is without decoding.  The /dec_foo location returns the decoded version of the string.
 
@@ -56,6 +59,8 @@ The NGINX configuraton provides two locations, /foo and /dec_foo.  Using /foo ju
          }
        }
    }
+
+_  
 
 In our JavaScript we access the foo argument from the query string through the request's arguements object (args).  We then use the `decodeURIComponent()` built-in method to decode the string.
 
