@@ -15,6 +15,8 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 **Step 2:** Now let's use curl to test our NGINX server:
 
 .. code-block:: none
+  :emphasize-lines: 1,4,7
+.. github display on
 
   curl http://localhost/
   Hello world!
