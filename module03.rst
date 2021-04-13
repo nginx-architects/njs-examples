@@ -1,5 +1,5 @@
 Extract JWT Payload into NGINX Variable [http/authorization/jwt]
-=====================================================
+================================================================
 
 JSON Web Tokens (JWT) are a common way to authenticate to web applications.  In addition to authentication, JWTs can also be used to pass information, called claims, about the user to the application.  The commercial version of NGINX, NGINX Plus, has built-in JWT handling features.  Using njs, we can parse JWTs and extract claim data even in the open source version of NGINX.
 
@@ -19,7 +19,8 @@ JSON Web Tokens (JWT) are a common way to authenticate to web applications.  In 
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This NGINX configuration uses `js_set` to invoke our JavaScript to extract the JWT claim into a variable we can return back to the user.
 
