@@ -52,6 +52,7 @@ Our JavaScript code is in two files so we need two `js_import` lines to load the
     }
   }
 
+|  
 The Javascript code to generate "Hello World!":
 
 .. code-block:: js
