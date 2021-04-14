@@ -47,7 +47,7 @@ The njs tool provides a prompt "**>>**" for its Javascript console.  Let's try s
 
 .. code-block:: none
 
-  interactive njs 0.4.1
+  interactive njs 0.5.3
 
   v.<Tab> -> the properties and prototype methods of v.
   type console.help() for more information
@@ -62,7 +62,7 @@ The njs tool provides a prompt "**>>**" for its Javascript console.  Let's try s
   >> globalThis
   global {
    njs: njs {
-    version: '0.4.1'
+    version: '0.5.3'
    }, ...
 
 Hit <Ctrl-D> to exit.
