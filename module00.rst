@@ -79,7 +79,7 @@ The files we will use for the labs are made available in a Github repo.  Use the
 
 You will notice that there are two directories, *njs* and *conf*.  The *njs* directory contains the JavaScript source code for each lab.  The *conf* directory contains the nginx configuration file needed to bring the JavaScript into our NGINX server.  Inside these directories are three subdirectories, *http*, *misc*, and *stream*.  For example, the lab named "hello" has a file in the *njs/http* directory called hello.js and a file in the *conf/http* directory called hello.conf.
 
-You will find a lab's name surrounded by [square brackets] at the top of each lab page. Hint: *Look at the left column of this page for a listing of the labs.*
+You will find a lab's name surrounded by [square brackets] at the top of each lab page.
 
 Lab Guidance
 ~~~~~~~~~~~~
