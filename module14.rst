@@ -2,10 +2,10 @@ Authorizing connections using ngx.fetch() as auth_request [stream/auth_request]
 ===============================================================================
 
 The example illustrates the usage of ngx.fetch() as an `auth request` analog in
-stream with a very simple TCP-based protocol: a connection starts with a
+a stream block with a very simple TCP-based protocol: a connection starts with a
 magic prefix "MAGiK" followed by a secret 2 bytes. The preread_verify handler
 reads the first part of a connection and sends the secret bytes for verification
-to a HTTP endpoint. Later it decides based upon the endpoint reply whether
+to a HTTP endpoint. Later it decides based upon the endpoint reply whether to
 forward the connection to an upstream or reject the connection.
 
 
@@ -41,7 +41,7 @@ forward the connection to an upstream or reject the connection.
 Code Snippets
 ~~~~~~~~~~~~~
 
-Notice how this config uses location blocks to define the target of each subrequest.
+This config has both a stream block and an http block.  The http block implements an "auth server" listing on port 8080.  The stream block has two server blocks, one listening on port 80 that implements our MAGiK protocol and the other listens on port 8081 to serve as a simple upstream server.
 
 .. code-block:: nginx
 
@@ -82,7 +82,9 @@ Notice how this config uses location blocks to define the target of each subrequ
   }
 
 
-This njs code retrieves a token from the "/auth" location and then passes the token to a second subrequest of the "/backend" location.
+This njs code has two functions. The first, preread_verify, will collect data from the preread buffer of the client connection looking for the two characters after the "MAGiK" prefix.  It then uses ngx.fetch() to send those two characters to the auth server.  If the auth server returns a 200 status code, the connection is allowed to continue.  Anything else results in the connection being denied.
+
+The validate function is used by the auth server to check the request body for the secret two byte code "QZ".  If the code is found a 200 is returned, if not a 403 is returned.
 
 .. code-block:: js
 

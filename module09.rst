@@ -1,6 +1,8 @@
 Generating JWT token [http/authorization/gen_hs_jwt]
 ====================================================
 
+This example will construct a JSON Web Token (JWT) from scratch including generating the digital signature.
+
 **Step 1:** Use the following commands to start your NGINX container with this lab's files: *Notice the JWT_GEN_KEY environment variable*
 
 .. code-block:: shell

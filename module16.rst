@@ -1,6 +1,9 @@
 Converting response body characters to lower case [http/response/to_lower_case]
 ===============================================================================
 
+NGINX Javascript now provides a `js_body_filter` directive to modify the response body before returning it to the client.  In this example, we just convert the body text to lower case.
+
+
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
 .. code-block:: shell
@@ -20,7 +23,7 @@ Converting response body characters to lower case [http/response/to_lower_case]
 Code Snippets
 ~~~~~~~~~~~~~
 
-Notice how this config uses location blocks to define the target of each subrequest.
+This config proxies requests to a simple upstream on port 8080.  Responses are passed through the main.to_lower_case method before being returned to the client.
 
 .. code-block:: nginx
 
@@ -51,7 +54,7 @@ Notice how this config uses location blocks to define the target of each subrequ
 
 
 
-This njs code retrieves a token from the "/auth" location and then passes the token to a second subrequest of the "/backend" location.
+This njs code takes the "data" returned by the upstream server and uses the .toLowerCase() method to convert it to lower case.  It then constructs a new response using r.sendBuffer() that is sent to the client instead.
 
 .. code-block:: js
 

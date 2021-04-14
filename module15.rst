@@ -1,6 +1,8 @@
 Modifying or deleting cookies sent by the upstream server [http/response/modify_set_cookie]
 ===========================================================================================
 
+NGINX Javascript uses the `js_header_filter` directive to modify headers sent by the upstream server before they are proxied back to the client.  In this example, we remove any cookie that is shorter than the minimum length specified in a `len` argument on the query string.
+
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
 .. code-block:: shell
@@ -28,7 +30,7 @@ Modifying or deleting cookies sent by the upstream server [http/response/modify_
 Code Snippets
 ~~~~~~~~~~~~~
 
-Notice how this config uses location blocks to define the target of each subrequest.
+The upstream server listens on port 8080 and returns three `Set-Cookie` headers.  In the server block listening on port 80, we proxy requests to the upstream, but call the main.cookies_filter method to inspect the headers returned.
 
 .. code-block:: nginx
 
@@ -62,7 +64,7 @@ Notice how this config uses location blocks to define the target of each subrequ
 
 
 
-This njs code retrieves a token from the "/auth" location and then passes the token to a second subrequest of the "/backend" location.
+This njs code copies the response headers to a "cookies" variable and then creates a new set of headers that includes only the cookies that are longer than the length specified in the `len` argument.
 
 .. code-block:: js
 

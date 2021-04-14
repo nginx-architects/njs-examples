@@ -1,7 +1,7 @@
 Reading subject alternative from client certificate [http/certs/subject_alternative]
 ====================================================================================
 
-Accessing arbitrary fields in client certificates.
+Mutual TLS is a one of many authentication methods supported by NGINX.  NGINX Javascript enables us to access arbitrary fields in a client certificate to use for business logic like routing a request.
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
@@ -26,7 +26,7 @@ Accessing arbitrary fields in client certificates.
 Code Snippets
 ~~~~~~~~~~~~~
 
-Notice how this config uses location blocks to define the target of each subrequest.
+This config enforces Mutual TLS authentication of client requests.  We use njs to extract the "Subject Alternative Name (SAN)" from the certificate presented by the client into the $san variable.
 
 .. code-block:: nginx
 
@@ -60,7 +60,7 @@ Notice how this config uses location blocks to define the target of each subrequ
 
 
 
-This njs code retrieves a token from the "/auth" location and then passes the token to a second subrequest of the "/backend" location.
+Here we import an existing module that provides processing of x509 certificates. We retrieve the client certificate from the $ssl_client_raw_cert NGINX variable and use the x509.parse_pem_cert() method to parse the raw cert into a data structure we can work with.  To locate the subjectAltName field, we use x509.get_oid_value() to look it up by oid.
 
 .. code-block:: js
 
