@@ -23,8 +23,6 @@ As is customary for any programming class, our first lab outputs "Hello World!" 
 
   docker stop njs_example
 
-|  
-
 Code Snippets
 ~~~~~~~~~~~~~
 
@@ -66,8 +64,6 @@ The Javascript code to generate "Hello World!":
   }
 
   export default {hello}
-
-|  
 
 The utils.js file will be part of all of our labs.  It has one function that displays the version of the njs module in use on this NGINX server.
 
