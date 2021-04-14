@@ -1,8 +1,5 @@
 Converting response body characters to lower case [http/response/to_lower_case]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
+===============================================================================
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
@@ -20,7 +17,8 @@ Converting response body characters to lower case [http/response/to_lower_case]
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

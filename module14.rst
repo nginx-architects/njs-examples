@@ -1,6 +1,7 @@
 Authorizing connections using ngx.fetch() as auth_request [stream/auth_request]
-===========================================
-The example illustrates the usage of ngx.fetch() as an `auth request`_ analog in
+===============================================================================
+
+The example illustrates the usage of ngx.fetch() as an `auth request` analog in
 stream with a very simple TCP-based protocol: a connection starts with a
 magic prefix "MAGiK" followed by a secret 2 bytes. The preread_verify handler
 reads the first part of a connection and sends the secret bytes for verification
@@ -37,7 +38,8 @@ forward the connection to an upstream or reject the connection.
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

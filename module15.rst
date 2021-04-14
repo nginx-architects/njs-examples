@@ -1,8 +1,5 @@
 Modifying or deleting cookies sent by the upstream server [http/response/modify_set_cookie]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
+===========================================================================================
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
@@ -28,7 +25,8 @@ Modifying or deleting cookies sent by the upstream server [http/response/modify_
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

@@ -1,5 +1,5 @@
 Generating JWT token [http/authorization/gen_hs_jwt]
-======================================
+====================================================
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files: *Notice the JWT_GEN_KEY environment variable*
 
@@ -17,7 +17,8 @@ Generating JWT token [http/authorization/gen_hs_jwt]
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This config uses `js_set` to invoke the jwt function in our njs code.  The generated JWT is returned in the response body.
 

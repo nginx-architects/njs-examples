@@ -46,7 +46,8 @@ In this example, we will use njs to use a online mapping table to transform a re
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This config uses `auth_request` to make a request to an "authentication server" before proxyingto the upstream server.  In this case, the "auth server" is an internal location that calls our njs code. The data returned by our code is put into the $route variable which is used to build a new URI to be proxied to the upstream server.
 

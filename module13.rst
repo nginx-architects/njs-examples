@@ -1,5 +1,6 @@
 Subrequests chaining [http/subrequests_chaining]
-===========================================
+================================================
+
 Chaining subrequests allows us to use the output of one subrequest as the input to another.
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
@@ -24,7 +25,8 @@ Chaining subrequests allows us to use the output of one subrequest as the input 
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

@@ -29,7 +29,8 @@ In this example we will use the stream module to inspect an incoming TCP connect
 
 *Note: Remove the -q1 option from nc above if you get an error.*
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This config uses `js_preread` to fetch incoming data into a buffer for inspection.
 

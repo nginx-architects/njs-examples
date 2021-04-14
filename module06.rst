@@ -37,7 +37,8 @@ With njs, NGINX is able to read and write files on disk.  In this example, data 
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how the push, flush, and read operations are triggered through NGINX location blocks.
 

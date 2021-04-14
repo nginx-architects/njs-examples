@@ -18,7 +18,8 @@ When our njs code generates dynamic content we can send our own HTTP requests to
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

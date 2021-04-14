@@ -19,7 +19,8 @@ In this example we will use the stream module to inject a new header into an HTT
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Instead of an http block, this config uses a stream block so we can use the `js_filter` directive to call our njs code.
 

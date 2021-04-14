@@ -1,10 +1,7 @@
 Reading subject alternative from client certificate [http/certs/subject_alternative]
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+====================================================================================
+
 Accessing arbitrary fields in client certificates.
-
-
-
-
 
 **Step 1:** Use the following commands to start your NGINX container with this lab's files:
 
@@ -26,7 +23,8 @@ Accessing arbitrary fields in client certificates.
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 Notice how this config uses location blocks to define the target of each subrequest.
 

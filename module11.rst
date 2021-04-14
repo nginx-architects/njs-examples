@@ -1,5 +1,5 @@
 Authorizing requests using auth_request [http/authorization/auth_request]
-=================================================================
+=========================================================================
 
 The `auth_request <http://nginx.org/en/docs/http/ngx_http_auth_request_module.html>`_
 module is used for client authorization based on the result of a subrequest.
@@ -49,7 +49,8 @@ Using njs along with auth_request can allow additional logic to be used for auth
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This config uses `auth_request` to make a request to an "authentication server" before proxying to the upstream server.  In this case, the "auth server" is an internal location that calls our njs code. 
 

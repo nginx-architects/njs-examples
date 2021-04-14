@@ -1,7 +1,8 @@
 Getting Started
 ===============
 
-**Using NGINX with Docker**
+Using NGINX with Docker
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Docker has an official image of NGINX on the Docker Hub. We will use this image to build our containers for the lab. Lets start a simple NGINX container and test it out:
 
@@ -66,7 +67,8 @@ The njs tool provides a prompt "**>>**" for its Javascript console.  Let's try s
 
 Hit <Ctrl-D> to exit.
 
-**Downloading Lab Files**
+Downloading Lab Files
+~~~~~~~~~~~~~~~~~~~~~
 
 The files we will use for the labs are made available in a Github repo.  Use the following commands to download them:
 
@@ -79,7 +81,8 @@ You will notice that there are two directories, *njs* and *conf*.  The *njs* dir
 
 You will find a lab's name surrounded by [square brackets] at the top of each lab page. Hint: *Look at the left column of this page for a listing of the labs.*
 
-**Lab Guidance**
+Lab Guidance
+~~~~~~~~~~~~
 
 Make sure you stay in the njs-examples directory (as shown above) for all of your labs while running Docker commands.
 

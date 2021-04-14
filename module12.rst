@@ -1,5 +1,5 @@
 Authorizing requests based on request body content [http/authorization/request_body]
-=================================================================
+====================================================================================
 
 Sometimes authentication credentials are passed in the request body rather than through headers or the query string.  Using njs, we have full access to the request body contents.
 
@@ -28,7 +28,8 @@ Sometimes authentication credentials are passed in the request body rather than 
 
   docker stop njs_example
 
-**Code Snippets**
+Code Snippets
+~~~~~~~~~~~~~
 
 This config uses `auth_request` to make a request to an "authentication server" before proxying to the upstream server.  In this case, the "auth server" is an internal location that calls our njs code. 
 
